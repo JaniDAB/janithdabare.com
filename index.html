@@ -129,23 +129,33 @@
 
   /* Case folders */
   .folders { display: grid; gap: 0; }
-  .folder { position: relative; margin-top: 2.1rem; border-radius: 0 22px 22px 22px; color: #fff; background: var(--violet); }
-  .folder::before { content: attr(data-tab); position: absolute; left: 0; bottom: 100%; height: 2.1rem; padding: 0 1.25rem; display: flex; align-items: center; border-radius: 16px 16px 0 0; background: inherit; font-size: .8125rem; font-weight: 600; }
-  .folder:nth-child(2) { background: var(--ink); }
+  .folder { --bg: var(--violet); position: relative; margin-top: 2.75rem; border-radius: 0 22px 22px 22px; color: #fff; background: var(--bg); transition: transform .25s ease, box-shadow .25s ease; }
+  .folder::before { content: attr(data-tab); position: absolute; left: 0; bottom: 100%; height: 2.75rem; padding: 0 1.5rem; display: flex; align-items: center; border-radius: 16px 16px 0 0; background: inherit; font-size: var(--step-0); font-weight: 700; letter-spacing: -0.01em; transition: height .25s ease, padding .25s ease; }
+  .folder:nth-child(2) { --bg: var(--ink); }
   .folder:nth-child(2)::before { left: 22%; }
-  .folder:nth-child(3) { background: var(--lilac); color: var(--ink); }
+  .folder:nth-child(3) { --bg: var(--lilac); color: var(--ink); }
   .folder:nth-child(3)::before { left: 44%; }
   @media (max-width: 640px) { .folder:nth-child(n)::before { left: 0; } }
-  .folder summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: 1.4rem 1.5rem; }
+  .folder summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: 1.75rem 1.75rem; border-radius: inherit; }
   .folder summary::-webkit-details-marker { display: none; }
-  .folder h3 { font-size: var(--step-2); letter-spacing: -0.015em; margin: 0; }
-  .folder .sum-line { margin: .25rem 0 0; opacity: .82; font-size: var(--step--1); }
-  .toggle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; flex: none; transition: transform .25s; }
-  .toggle::before, .toggle::after { content: ""; position: absolute; width: 14px; height: 2px; background: currentColor; border-radius: 2px; }
-  .toggle::after { transform: rotate(90deg); transition: transform .25s; }
-  .toggle { position: relative; }
+  .folder h3 { font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.02em; margin: 0; }
+  .folder .sum-line { margin: .5rem 0 0; opacity: .85; font-size: var(--step-0); }
+  .folder:not([open]):hover, .folder:not([open]):has(summary:focus-visible) { transform: translateY(-6px); box-shadow: 0 22px 40px -22px rgba(40, 20, 90, .55); }
+  .folder:not([open]):hover::before, .folder:not([open]):has(summary:focus-visible)::before { height: 3.1rem; padding: 0 1.75rem; }
+  .open-cue { display: flex; align-items: center; gap: .75rem; font-size: var(--step--1); font-weight: 700; }
+  .open-cue .when-open, .folder[open] .open-cue .when-closed { display: none; }
+  .folder[open] .open-cue .when-open { display: inline; }
+  @media (max-width: 640px) { .open-cue > span:not(.toggle) { display: none !important; } }
+  .toggle { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; flex: none; transition: transform .25s, background-color .2s; }
+  .toggle::before, .toggle::after { content: ""; position: absolute; width: 16px; height: 2px; background: currentColor; border-radius: 2px; transition: transform .25s, background-color .2s; }
+  .toggle::after { transform: rotate(90deg); }
   .folder[open] .toggle::after { transform: rotate(0deg); }
-  .folder-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 0 1.5rem 1.6rem; }
+  .folder summary:hover .toggle, .folder summary:focus-visible .toggle { background: currentColor; transform: rotate(90deg); }
+  .folder summary:hover .toggle::before, .folder summary:hover .toggle::after,
+  .folder summary:focus-visible .toggle::before, .folder summary:focus-visible .toggle::after { background: var(--bg); }
+  .folder[open] .folder-body { animation: folder-in .3s ease; }
+  @keyframes folder-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  .folder-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 0 1.75rem 1.75rem; }
   @media (max-width: 860px) { .folder-body { grid-template-columns: 1fr; gap: 1rem; } }
   .folder-body h4 { margin: 0 0 .3rem; font-size: var(--step--1); font-weight: 700; opacity: .75; }
   .folder-body p { margin: 0; font-size: 1rem; }
@@ -332,7 +342,7 @@
               <h3>A go-live under pressure</h3>
               <p class="sum-line">Mobile init took 15 minutes. The cause was outside IFS.</p>
             </div>
-            <span class="toggle" aria-hidden="true"></span>
+            <span class="open-cue" aria-hidden="true"><span class="when-closed">Read case</span><span class="when-open">Close</span><span class="toggle"></span></span>
           </summary>
           <div class="folder-body">
             <div>
@@ -357,7 +367,7 @@
               <h3>Saving a Monday go-live</h3>
               <p class="sum-line">Users couldn't initialize four days before go-live.</p>
             </div>
-            <span class="toggle" aria-hidden="true"></span>
+            <span class="open-cue" aria-hidden="true"><span class="when-closed">Read case</span><span class="when-open">Close</span><span class="toggle"></span></span>
           </summary>
           <div class="folder-body">
             <div>
@@ -381,7 +391,7 @@
               <h3>Taking over a system-wide slowdown</h3>
               <p class="sum-line">Picked up a live escalation and brought the system back to normal.</p>
             </div>
-            <span class="toggle" aria-hidden="true"></span>
+            <span class="open-cue" aria-hidden="true"><span class="when-closed">Read case</span><span class="when-open">Close</span><span class="toggle"></span></span>
           </summary>
           <div class="folder-body">
             <div>
