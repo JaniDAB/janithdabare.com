@@ -199,6 +199,19 @@
   .switch { display: inline-flex; background: var(--paper-2); border-radius: 999px; padding: 4px; margin-bottom: 1.25rem; }
   .switch button { font: 700 var(--step--1)/1 var(--font); border: 0; background: transparent; color: var(--ink-soft); padding: .6rem 1rem; border-radius: 999px; cursor: pointer; }
   .switch button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 8px -3px rgba(40,20,90,.3); }
+  .study { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 1.5rem 1.6rem; margin-bottom: 1.75rem; box-shadow: 0 18px 40px -28px rgba(40, 20, 90, .5); }
+  .study-label { display: inline-flex; align-items: center; gap: .5rem; margin: 0; font-size: var(--step--1); font-weight: 700; color: var(--violet); }
+  .study-label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 4px var(--lilac); }
+  .study h3 { font-size: var(--step-2); line-height: 1.15; letter-spacing: -0.015em; margin: .5rem 0 .1rem; }
+  .study-org { color: var(--ink-soft); margin: 0 0 1.25rem; }
+  .study-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+  .study-track li { position: relative; padding-top: 1.25rem; font-size: var(--step--1); line-height: 1.4; }
+  .study-track li::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; border-radius: 6px; background: var(--line); }
+  .study-track .done::before { background: var(--violet); }
+  .study-track .now::before { background: linear-gradient(90deg, var(--violet) 50%, var(--lilac) 50%); }
+  .study-track b { display: block; font-size: 1rem; }
+  .study-track span { color: var(--ink-soft); }
+  @media (max-width: 480px) { .study-track { grid-template-columns: 1fr; gap: .9rem; } }
   .timeline { list-style: none; margin: 0; padding: 0; }
   .timeline li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1.25rem; padding: 1rem 0; border-top: 1px solid var(--line); }
   .timeline li:first-child { border-top: 0; padding-top: 0; }
@@ -464,6 +477,16 @@
         <p>Before IFS I spent three years at Vinota Networks in customer service, VoIP server administration and Angular development. I'm now finishing an MSc in Big Data Analytics at Robert Gordon University.</p>
       </div>
       <div>
+        <div class="study">
+          <p class="study-label">Studying now</p>
+          <h3>MSc Big Data Analytics</h3>
+          <p class="study-org">Robert Gordon University, part-time</p>
+          <ol class="study-track" aria-label="Progress">
+            <li class="done"><b>Taught modules</b><span>Done</span></li>
+            <li class="done"><b>PgDip</b><span>Distinction, Sept 2026</span></li>
+            <li class="now"><b>Final project</b><span>In progress</span></li>
+          </ol>
+        </div>
         <div class="switch" role="tablist" aria-label="Background">
           <button role="tab" aria-selected="true" aria-controls="p-work" id="t-work">Experience</button>
           <button role="tab" aria-selected="false" aria-controls="p-edu" id="t-edu">Education</button>
