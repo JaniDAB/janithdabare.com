@@ -157,7 +157,7 @@
   .band { background: var(--console); color: #fff; border-radius: 28px; margin: 0 var(--gutter); }
   .band .wrap { padding-top: clamp(2.5rem, 6vw, 4rem); padding-bottom: clamp(2.5rem, 6vw, 4rem); }
   .band h2 { color: #fff; }
-  .figures { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #3A3156; }
+  .figures { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid #3A3156; }
   @media (max-width: 760px) { .figures { grid-template-columns: 1fr; } }
   .figure { padding: 1.5rem 1.5rem 0 0; }
   .figure + .figure { border-left: 1px solid #3A3156; padding-left: 1.5rem; }
@@ -255,7 +255,7 @@
     <div class="wrap">
       <div>
         <p class="kicker">Software Engineer at IFS, Colombo</p>
-        <h1 id="hero-title">I find out why enterprise software breaks, and I fix it before it holds up a go-live.</h1>
+        <h1 id="hero-title">I find out why enterprise software breaks, and I fix it before it holds up a <span style="white-space: nowrap;">go-live.</span></h1>
         <p class="intro">Nearly four years supporting IFS Cloud and Mobile Work Order for manufacturing and service customers in North America and the UK.</p>
         <div class="actions">
           <a class="btn btn-primary" href="#replay">Watch a case get solved</a>
@@ -266,7 +266,7 @@
         <div class="portrait-panel">
           <img src="images/janith.jpg" width="886" height="886" alt="Janith Dabare, smiling, in glasses and a light shirt">
         </div>
-        <figcaption class="badge"><strong><span class="dot" aria-hidden="true"></span>IFS Cloud and MWO</strong>Service Management support</figcaption>
+        <figcaption class="badge"><strong><span class="dot" aria-hidden="true"></span>IFS Cloud and MWO</strong></figcaption>
       </figure>
     </div>
   </section>
@@ -280,7 +280,6 @@
           <div class="tabs" role="tablist" aria-label="Choose a case to replay">
             <button class="tab" role="tab" aria-selected="true" data-case="0">Slow mobile init</button>
             <button class="tab" role="tab" aria-selected="false" data-case="1">Go-live blocker</button>
-            <button class="tab" role="tab" aria-selected="false" data-case="2">P1 performance</button>
           </div>
         </div>
         <div class="console-body">
@@ -341,7 +340,7 @@
             </div>
             <div>
               <h4>What I did</h4>
-              <p>I ran the same user on our side and it finished in about 3 minutes. Testing showed the cause: their network, plus an older app version installed from a third-party source instead of the Microsoft Store. On go-live weekend a P1 outage pointed at MWO queries. I checked the database load and they ranked seventh and eighth for CPU.</p>
+              <p>I ran the same user on our side and it finished in about 3 minutes. Testing showed the cause: their network, plus an older app version installed from a third-party source instead of the Microsoft Store.</p>
             </div>
             <div>
               <h4>How it ended</h4>
@@ -410,10 +409,6 @@
         <div class="figure">
           <div class="big">4<em> yrs</em></div>
           <p>supporting IFS Cloud and MWO customers, nearly</p>
-        </div>
-        <div class="figure">
-          <div class="big">#7<em>, #8</em></div>
-          <p>where MWO queries really ranked for CPU, in a P1 that blamed them</p>
         </div>
         <div class="figure">
           <div class="big">30<em>%</em></div>
@@ -561,15 +556,7 @@
       ['<span class="dim">></span> last resort: Group Push to Batch', 900],
       ['<span class="dim">></span> initialize with Batch ........... <span class="num">ok</span>', 700],
       ['', 250],
-      ['<span class="done">status: resolved, go-live on schedule</span>', 0] ]},
-    { prio: "P1", lines: [
-      ['<span class="dim">$</span> open case: P1 performance, MWO queries blamed', 500],
-      ['<span class="dim">></span> pull top CPU consumers', 800],
-      ['<span class="dim">></span> MWO queries ranked ............. <span class="num">#7, #8</span>', 800],
-      ['<span class="dim">></span> top consumers belong to other areas', 700],
-      ['<span class="dim">></span> share evidence, route to owning team', 800],
-      ['', 250],
-      ['<span class="done">status: handed over with evidence</span>', 0] ]}
+      ['<span class="done">status: resolved, go-live on schedule</span>', 0] ]}
   ];
   const log = document.getElementById("log");
   const prio = document.getElementById("prio");
