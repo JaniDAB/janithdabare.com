@@ -280,6 +280,7 @@
           <div class="tabs" role="tablist" aria-label="Choose a case to replay">
             <button class="tab" role="tab" aria-selected="true" data-case="0">Slow mobile init</button>
             <button class="tab" role="tab" aria-selected="false" data-case="1">Go-live blocker</button>
+            <button class="tab" role="tab" aria-selected="false" data-case="2">Dropped VoIP calls</button>
           </div>
         </div>
         <div class="console-body">
@@ -556,7 +557,16 @@
       ['<span class="dim">></span> last resort: Group Push to Batch', 900],
       ['<span class="dim">></span> initialize with Batch ........... <span class="num">ok</span>', 700],
       ['', 250],
-      ['<span class="done">status: resolved, go-live on schedule</span>', 0] ]}
+      ['<span class="done">status: resolved, go-live on schedule</span>', 0] ]},
+    { prio: "", lines: [
+      ['<span class="dim">$</span> open case: VoIP calls dropping (Vinota Networks)', 500],
+      ['<span class="dim">></span> group dropped calls by route', 700],
+      ['<span class="dim">></span> test each route', 900],
+      ['<span class="dim">></span> worst drops on a few routes', 700],
+      ['<span class="dim">></span> move traffic to routes that held up', 800],
+      ['<span class="dim">></span> call drop rate ................ <span class="num">-30%</span>', 800],
+      ['', 250],
+      ['<span class="done">status: resolved</span>', 0] ]}
   ];
   const log = document.getElementById("log");
   const prio = document.getElementById("prio");
@@ -573,6 +583,7 @@
     current = i;
     const c = cases[i];
     prio.textContent = c.prio;
+    prio.style.visibility = c.prio ? "" : "hidden";
     tabs.forEach((t, k) => t.setAttribute("aria-selected", k === i ? "true" : "false"));
     if (reduce) { draw(c.lines, c.lines.length, false); return; }
     let n = 0;
