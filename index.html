@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Janith Dabare | IFS support and escalations</title>
+<meta name="description" content="Janith Dabare, Software Engineer at IFS. Support for IFS Cloud Service Management and Mobile Work Order, escalations, go-lives and root-cause troubleshooting.">
+<meta property="og:title" content="Janith Dabare | IFS support and escalations">
+<meta property="og:description" content="I get to the bottom of IFS problems, especially the ones that stall a go-live.">
+<meta property="og:image" content="images/janith.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4F2F8;
+    --paper-2: #EAE5F3;
+    --ink: #1C1530;
+    --ink-soft: #564E6B;
+    --violet: #5B2BD6;
+    --violet-deep: #3A1A8F;
+    --lilac: #DDD3F6;
+    --amber: #E3A008;
+    --line: #D6CFE5;
+    --console: #1E1733;
+    --console-text: #E1DCEE;
+    --console-dim: #8E86A8;
+    --ok: #7DE3B5;
+
+    --font: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+    --step--1: 0.875rem;
+    --step-0: 1.0625rem;
+    --step-1: 1.25rem;
+    --step-2: clamp(1.5rem, 2.6vw, 2rem);
+    --step-3: clamp(1.9rem, 3.6vw, 2.75rem);
+    --step-4: clamp(2.4rem, 5vw, 4rem);
+
+    --wrap: 1180px;
+    --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: var(--step-0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  a { color: var(--violet); text-underline-offset: 3px; }
+  a:hover { color: var(--violet-deep); }
+  :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Header */
+  .site-header { position: sticky; top: 0; z-index: 20; background: rgba(244, 242, 248, 0.86); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+  .site-header.scrolled { border-bottom-color: var(--line); }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 64px; }
+  .brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
+  .brand-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--violet); color: #fff; display: grid; place-items: center; font-size: .8rem; font-weight: 800; }
+  .nav { display: flex; align-items: center; gap: 1.5rem; }
+  .nav a { color: var(--ink-soft); text-decoration: none; font-size: var(--step--1); font-weight: 600; }
+  .nav a:hover { color: var(--ink); }
+  .nav .btn { color: #fff; }
+  @media (max-width: 760px) { .nav a:not(.btn) { display: none; } }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .78rem 1.25rem; border-radius: 999px; font: 700 var(--step--1)/1 var(--font); text-decoration: none; border: 2px solid var(--violet); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+  .btn-primary { background: var(--violet); color: #fff; }
+  .btn-primary:hover { background: var(--violet-deep); border-color: var(--violet-deep); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--violet); }
+  .btn-ghost:hover { background: var(--lilac); }
+  .btn-sm { padding: .5rem .9rem; }
+
+  /* Hero */
+  .hero { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero .wrap { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: clamp(2rem, 5vw, 4rem); align-items: end; }
+  @media (max-width: 880px) { .hero .wrap { grid-template-columns: 1fr; } }
+  .kicker { font-weight: 700; color: var(--violet); margin: 0 0 1rem; }
+  .hero h1 { font-size: var(--step-4); line-height: 1.04; letter-spacing: -0.035em; font-weight: 800; margin: 0 0 1.5rem; max-width: 17ch; }
+  .intro { font-size: var(--step-1); color: var(--ink-soft); max-width: 40ch; margin: 0 0 2rem; line-height: 1.5; }
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+  .portrait { position: relative; justify-self: end; width: min(100%, 400px); margin: 0; }
+  .portrait-panel { aspect-ratio: 1 / 1; border-radius: 28px; overflow: hidden; background: var(--paper-2); box-shadow: 0 0 0 6px var(--lilac); }
+  .portrait-panel img { width: 100%; height: 100%; object-fit: cover; }
+  .badge { position: absolute; left: -1.25rem; bottom: 1.5rem; background: #fff; border-radius: 14px; padding: .7rem .95rem; box-shadow: 0 14px 30px -14px rgba(40, 20, 90, .45); font-size: var(--step--1); line-height: 1.35; }
+  .badge strong { display: block; }
+  .badge .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2BB673; margin-right: .4rem; vertical-align: 1px; }
+  @media (max-width: 880px) { .portrait { justify-self: start; width: min(78%, 320px); } .badge { left: auto; right: -1rem; } }
+
+  /* Sections */
+  section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
+  h2 { font-size: var(--step-3); line-height: 1.12; letter-spacing: -0.025em; font-weight: 800; margin: 0 0 1rem; }
+  h3 { font-size: var(--step-1); line-height: 1.3; font-weight: 700; margin: 0 0 .5rem; }
+  .lede { color: var(--ink-soft); max-width: 58ch; margin: 0 0 2.25rem; }
+
+  /* Console replay */
+  .replay { padding-top: 0; }
+  .console { background: var(--console); color: var(--console-text); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 70px -40px rgba(40, 20, 90, .6); }
+  .console-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding: 1rem 1.25rem; border-bottom: 1px solid #332A4D; }
+  .console-title { font-weight: 700; color: #fff; }
+  .console-title span { color: var(--console-dim); font-weight: 400; }
+  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tab { font: 600 .8125rem/1 var(--font); color: var(--console-text); background: transparent; border: 1px solid #443A63; border-radius: 999px; padding: .55rem .85rem; cursor: pointer; }
+  .tab:hover { border-color: #6A5C95; }
+  .tab[aria-selected="true"] { background: var(--console-text); color: var(--console); border-color: var(--console-text); }
+  .console-body { display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 1.25rem 1.25rem 1.4rem; font-family: var(--mono); font-size: .875rem; line-height: 1.8; min-height: 17.5rem; }
+  .console-body .log p { margin: 0; white-space: pre-wrap; }
+  .log .dim { color: var(--console-dim); }
+  .log .num { color: #F5C76A; }
+  .log .done { color: var(--ok); font-weight: 500; }
+  .caret { display: inline-block; width: .55em; height: 1.1em; background: var(--console-text); vertical-align: -.2em; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .prio { align-self: start; font-family: var(--font); font-weight: 700; font-size: .75rem; color: #241500; background: var(--amber); border-radius: 6px; padding: .2rem .5rem; }
+  .console-foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0 1.25rem 1.25rem; }
+  .console-foot p { margin: 0; color: var(--console-dim); font-size: var(--step--1); max-width: 60ch; }
+  .replay-btn { color: var(--console-text); border-color: #443A63; background: transparent; }
+  .replay-btn:hover { background: #2A2145; color: #fff; }
+  @media (max-width: 560px) { .console-body { font-size: .72rem; padding: 1rem; } }
+
+  /* What I do */
+  .do-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 960px) { .do-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .do-grid { grid-template-columns: 1fr; } }
+  .do { border-top: 4px solid var(--violet); padding-top: 1.1rem; }
+  .do p { margin: 0; color: var(--ink-soft); }
+
+  /* Case folders */
+  .folders { display: grid; gap: 0; }
+  .folder { position: relative; margin-top: 2.1rem; border-radius: 0 22px 22px 22px; color: #fff; background: var(--violet); }
+  .folder::before { content: attr(data-tab); position: absolute; left: 0; bottom: 100%; height: 2.1rem; padding: 0 1.25rem; display: flex; align-items: center; border-radius: 16px 16px 0 0; background: inherit; font-size: .8125rem; font-weight: 600; }
+  .folder:nth-child(2) { background: var(--ink); }
+  .folder:nth-child(2)::before { left: 22%; }
+  .folder:nth-child(3) { background: var(--lilac); color: var(--ink); }
+  .folder:nth-child(3)::before { left: 44%; }
+  @media (max-width: 640px) { .folder:nth-child(n)::before { left: 0; } }
+  .folder summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: 1.4rem 1.5rem; }
+  .folder summary::-webkit-details-marker { display: none; }
+  .folder h3 { font-size: var(--step-2); letter-spacing: -0.015em; margin: 0; }
+  .folder .sum-line { margin: .25rem 0 0; opacity: .82; font-size: var(--step--1); }
+  .toggle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; flex: none; transition: transform .25s; }
+  .toggle::before, .toggle::after { content: ""; position: absolute; width: 14px; height: 2px; background: currentColor; border-radius: 2px; }
+  .toggle::after { transform: rotate(90deg); transition: transform .25s; }
+  .toggle { position: relative; }
+  .folder[open] .toggle::after { transform: rotate(0deg); }
+  .folder-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 0 1.5rem 1.6rem; }
+  @media (max-width: 860px) { .folder-body { grid-template-columns: 1fr; gap: 1rem; } }
+  .folder-body h4 { margin: 0 0 .3rem; font-size: var(--step--1); font-weight: 700; opacity: .75; }
+  .folder-body p { margin: 0; font-size: 1rem; }
+  .folder .lesson { grid-column: 1 / -1; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.25); }
+  .folder:nth-child(3) .lesson { border-top-color: rgba(28,21,48,.2); }
+  .folders-hint { color: var(--ink-soft); font-size: var(--step--1); margin: 0 0 .5rem; }
+
+  /* Numbers band */
+  .band { background: var(--console); color: #fff; border-radius: 28px; margin: 0 var(--gutter); }
+  .band .wrap { padding-top: clamp(2.5rem, 6vw, 4rem); padding-bottom: clamp(2.5rem, 6vw, 4rem); }
+  .band h2 { color: #fff; }
+  .figures { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #3A3156; }
+  @media (max-width: 760px) { .figures { grid-template-columns: 1fr; } }
+  .figure { padding: 1.5rem 1.5rem 0 0; }
+  .figure + .figure { border-left: 1px solid #3A3156; padding-left: 1.5rem; }
+  @media (max-width: 760px) { .figure + .figure { border-left: 0; padding-left: 0; border-top: 1px solid #3A3156; } .figure { padding-bottom: 1.5rem; } }
+  .figure .big { font-size: clamp(2.6rem, 6vw, 4.25rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: #fff; }
+  .figure .big em { font-style: normal; color: #B79CFF; }
+  .figure p { color: #B5ADCB; font-size: var(--step--1); max-width: 30ch; margin: .75rem 0 0; }
+
+  /* How I work */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); counter-reset: s; }
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+  .steps li { counter-increment: s; padding: 1.25rem 1.5rem 0 0; }
+  .steps li::before { content: counter(s, decimal-leading-zero); display: block; font-size: var(--step-3); color: var(--violet); font-weight: 500; letter-spacing: -0.03em; margin-bottom: .5rem; }
+  .steps p { margin: 0; color: var(--ink-soft); }
+
+  /* Quote */
+  .quote { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+  @media (max-width: 700px) { .quote { grid-template-columns: 1fr; } }
+  .quote-mark { font-size: 7rem; line-height: .8; color: var(--violet); font-weight: 800; }
+  blockquote { margin: 0; font-size: clamp(1.4rem, 2.8vw, 2.1rem); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; max-width: 34ch; }
+  blockquote p { margin: 0; }
+  .quote-src { margin-top: 1.25rem; color: var(--ink-soft); font-size: var(--step--1); }
+
+  /* About + timeline */
+  .about { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 5vw, 4rem); }
+  @media (max-width: 880px) { .about { grid-template-columns: 1fr; } }
+  .about .prose p { margin: 0 0 1rem; max-width: 60ch; }
+  .switch { display: inline-flex; background: var(--paper-2); border-radius: 999px; padding: 4px; margin-bottom: 1.25rem; }
+  .switch button { font: 700 var(--step--1)/1 var(--font); border: 0; background: transparent; color: var(--ink-soft); padding: .6rem 1rem; border-radius: 999px; cursor: pointer; }
+  .switch button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 8px -3px rgba(40,20,90,.3); }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1.25rem; padding: 1rem 0; border-top: 1px solid var(--line); }
+  .timeline li:first-child { border-top: 0; padding-top: 0; }
+  @media (max-width: 560px) { .timeline li { grid-template-columns: 1fr; gap: .2rem; } }
+  .when { color: var(--ink-soft); font-size: var(--step--1); padding-top: .15rem; }
+  .timeline h3 { margin: 0; font-size: var(--step-0); }
+  .timeline .org { color: var(--ink-soft); font-weight: 400; }
+  .timeline p { margin: .25rem 0 0; color: var(--ink-soft); font-size: 1rem; }
+  .panel[hidden] { display: none; }
+
+  /* Skills */
+  .skill-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem 2rem; }
+  .skill-group h3 { font-size: var(--step--1); color: var(--ink-soft); font-weight: 600; margin: 0 0 .6rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none; margin: 0; padding: 0; }
+  .tags li { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .25rem .65rem; font-size: .9375rem; }
+
+  /* Contact */
+  .contact { background: var(--violet); color: #fff; border-radius: 28px; margin: 0 var(--gutter) var(--gutter); }
+  .contact .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 5vw, 4rem); padding-top: clamp(2.5rem, 6vw, 4.5rem); padding-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+  @media (max-width: 880px) { .contact .wrap { grid-template-columns: 1fr; } }
+  .contact h2 { color: #fff; max-width: 14ch; }
+  .contact p { color: #E4DBFF; max-width: 42ch; }
+  .contact a { color: #fff; }
+  .links { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+  .links .btn { border-color: rgba(255,255,255,.6); color: #fff; }
+  .links .btn:hover { background: rgba(255,255,255,.12); }
+  form { background: #fff; color: var(--ink); border-radius: 20px; padding: clamp(1.25rem, 3vw, 2rem); display: grid; gap: 1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+  label, legend { font-size: var(--step--1); font-weight: 700; display: block; margin-bottom: .35rem; }
+  input[type=text], input[type=email], textarea { width: 100%; font: 400 1rem/1.4 var(--font); color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .7rem .8rem; }
+  input:focus, textarea:focus { outline: 2px solid var(--violet); outline-offset: 0; border-color: var(--violet); }
+  textarea { min-height: 7rem; resize: vertical; }
+  fieldset { border: 0; margin: 0; padding: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .chips input { position: absolute; opacity: 0; pointer-events: none; }
+  .chips label { font-weight: 600; margin: 0; padding: .45rem .8rem; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; background: var(--paper); }
+  .chips input:checked + label { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .chips input:focus-visible + label { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .contact .form-note { font-size: .8125rem; color: var(--ink-soft); margin: 0; }
+  .contact .form-error { color: #B42318; font-size: var(--step--1); margin: 0; min-height: 1.2em; }
+
+  .site-footer { padding: 1.5rem 0 2.5rem; color: var(--ink-soft); font-size: var(--step--1); }
+  .site-footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">JD</span>Janith Dabare</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#cases">Case stories</a>
+      <a href="#how">How I work</a>
+      <a href="#about">About</a>
+      <a class="btn btn-primary btn-sm" href="#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <p class="kicker">Software Engineer at IFS, Colombo</p>
+        <h1 id="hero-title">I get to the bottom of IFS problems, especially the ones that stall a go-live.</h1>
+        <p class="intro">Nearly four years supporting IFS Cloud and Mobile Work Order for manufacturing and service customers in North America and the UK.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#replay">Watch a case get solved</a>
+          <a class="btn btn-ghost" href="#contact">Get in touch</a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <div class="portrait-panel">
+          <img src="images/janith.jpg" width="886" height="886" alt="Janith Dabare, smiling, in glasses and a light shirt">
+        </div>
+        <figcaption class="badge"><strong><span class="dot" aria-hidden="true"></span>IFS Cloud and MWO</strong>Service Management support</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="replay" id="replay" aria-labelledby="replay-title">
+    <div class="wrap">
+      <h2 id="replay-title" class="sr-only">Case replays</h2>
+      <div class="console">
+        <div class="console-top">
+          <div class="console-title">Case replay <span>pick one</span></div>
+          <div class="tabs" role="tablist" aria-label="Choose a case to replay">
+            <button class="tab" role="tab" aria-selected="true" data-case="0">Slow mobile init</button>
+            <button class="tab" role="tab" aria-selected="false" data-case="1">Go-live blocker</button>
+            <button class="tab" role="tab" aria-selected="false" data-case="2">P1 performance</button>
+          </div>
+        </div>
+        <div class="console-body">
+          <div class="log" id="log" aria-live="polite"></div>
+          <span class="prio" id="prio">P1</span>
+        </div>
+        <div class="console-foot">
+          <p id="log-note">Taken from real cases. Customer details removed.</p>
+          <button class="btn btn-sm replay-btn" id="replay-btn" type="button">Replay</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="what" aria-labelledby="what-title">
+    <div class="wrap">
+      <h2 id="what-title">What I do</h2>
+      <p class="lede">Customers and partners raise cases through ServiceNow. I find out what is really going wrong and fix it, or hand it to R&amp;D with everything they need.</p>
+      <div class="do-grid">
+        <div class="do">
+          <h3>Troubleshooting</h3>
+          <p>Mobile sync failures, initialization problems, slow performance. I debug until the root cause is clear, whether it's in IFS, the network or the customer's setup.</p>
+        </div>
+        <div class="do">
+          <h3>Escalations</h3>
+          <p>P1 calls, daily ops calls and go-live support, with the customer kept up to date while the work goes on.</p>
+        </div>
+        <div class="do">
+          <h3>Fixes and workarounds</h3>
+          <p>I apply and test urgent corrective fixes, and write scripts that keep the business running until the permanent fix lands.</p>
+        </div>
+        <div class="do">
+          <h3>Clear handoffs to R&amp;D</h3>
+          <p>When code has to change, the Jira I raise already has the steps, logs and impact, so nobody loses a day going back and forth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cases" aria-labelledby="cases-title">
+    <div class="wrap">
+      <h2 id="cases-title">Case stories</h2>
+      <p class="folders-hint">Open a folder to read the full case.</p>
+      <div class="folders">
+
+        <details class="folder" data-tab="2024, utility group" open>
+          <summary>
+            <div>
+              <h3>A go-live under pressure</h3>
+              <p class="sum-line">Mobile init took 15 minutes. The cause was outside IFS.</p>
+            </div>
+            <span class="toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="folder-body">
+            <div>
+              <h4>The problem</h4>
+              <p>During an MWO rollout at a North American utility group, initializing the app took more than 15 minutes. The account was escalated to the highest level, with a daily ops call and a growing queue of cases from two of the group's companies.</p>
+            </div>
+            <div>
+              <h4>What I did</h4>
+              <p>I ran the same user on our side and it finished in about 3 minutes. Testing showed the cause: their network, plus an older app version installed from a third-party source instead of the Microsoft Store. On go-live weekend a P1 outage pointed at MWO queries. I checked the database load and they ranked seventh and eighth for CPU.</p>
+            </div>
+            <div>
+              <h4>How it ended</h4>
+              <p>Each issue went to the team that could fix it. When a sister company called empty error log entries a show stopper, I worked it through with R&amp;D and showed there was no business impact, so no out-of-band fix was needed.</p>
+            </div>
+            <p class="lesson">What I took from it: don't give an answer on the spot. Say you'll check the facts with R&amp;D, then come back with evidence.</p>
+          </div>
+        </details>
+
+        <details class="folder" data-tab="2025, oil and gas">
+          <summary>
+            <div>
+              <h3>Saving a Monday go-live</h3>
+              <p class="sum-line">Users couldn't initialize four days before go-live.</p>
+            </div>
+            <span class="toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="folder-body">
+            <div>
+              <h4>The problem</h4>
+              <p>The Thursday before go-live, an oil and gas services company's MWO users couldn't initialize the app using Group Push. The case was tagged for maximum attention.</p>
+            </div>
+            <div>
+              <h4>What I did</h4>
+              <p>I got on a call with the customer straight away and gathered the details. The next day, in the escalation call, we tried several fixes without success. As a last resort we switched them from Group Push to Batch.</p>
+            </div>
+            <div>
+              <h4>How it ended</h4>
+              <p>Batch worked. Users could initialize, and the go-live went ahead on the Monday as planned.</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="folder" data-tab="2025, US customer">
+          <summary>
+            <div>
+              <h3>Taking over a system-wide slowdown</h3>
+              <p class="sum-line">Picked up a live escalation and brought the system back to normal.</p>
+            </div>
+            <span class="toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="folder-body">
+            <div>
+              <h4>The problem</h4>
+              <p>Widespread slowness and system-down incidents had produced several MWO cases at once. A colleague handled the escalation first and I took it over a week in.</p>
+            </div>
+            <div>
+              <h4>What I did</h4>
+              <p>I joined the weekly escalation touchpoint calls with the customer and kept them updated, while working through the related cases one by one.</p>
+            </div>
+            <div>
+              <h4>How it ended</h4>
+              <p>The cases were resolved and the system went back to normal performance.</p>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="band" aria-labelledby="numbers-title">
+    <div class="wrap">
+      <h2 id="numbers-title">A few numbers</h2>
+      <div class="figures">
+        <div class="figure">
+          <div class="big">4<em> yrs</em></div>
+          <p>supporting IFS Cloud and MWO customers, nearly</p>
+        </div>
+        <div class="figure">
+          <div class="big">#7<em>, #8</em></div>
+          <p>where MWO queries really ranked for CPU, in a P1 that blamed them</p>
+        </div>
+        <div class="figure">
+          <div class="big">30<em>%</em></div>
+          <p>fewer dropped VoIP calls after my route testing at Vinota Networks</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">How I work a case</h2>
+      <p class="lede">The same four steps, whether it's a quiet ticket or a P1 with management on the call.</p>
+      <ol class="steps">
+        <li><h3>Reproduce it</h3><p>Run the same user, data and device on our side, so we know if the problem is the product or the environment.</p></li>
+        <li><h3>Find the real cause</h3><p>Logs, queries, versions and network. I keep going until the evidence points one way.</p></li>
+        <li><h3>Fix it or hand it off</h3><p>A config change, corrective fix or script if I can. A Jira with full evidence if R&amp;D needs to change code.</p></li>
+        <li><h3>Close the loop</h3><p>Tell the customer what changed and why, in plain words, and only once it's checked.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="quote-title" style="padding-top: 0;">
+    <div class="wrap">
+      <h2 id="quote-title" class="sr-only">What a customer said</h2>
+      <div class="quote">
+        <div class="quote-mark" aria-hidden="true">“</div>
+        <div>
+          <blockquote><p>Janith was as determined as me to get to the bottom of the issue, which is refreshing to see. I have always thought your support agents are targeted based on the amount of cases closed, not fixed.</p></blockquote>
+          <p class="quote-src">IFS customer, UK manufacturing. Shared in IFS Kudos Corner, September 2026.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" aria-labelledby="about-title" style="background: var(--paper-2);">
+    <div class="wrap about">
+      <div class="prose">
+        <h2 id="about-title">About</h2>
+        <p>I'm a Software Engineer at IFS, but most of my day isn't writing code. I work in Unified Support for the manufacturing vertical, looking after IFS Cloud Service Management and Mobile Work Order.</p>
+        <p>A lot of the job is investigation. I reproduce the problem, compare the customer's setup with ours, read logs, and test until I can say for certain where the issue sits. I also represent support in escalations, from daily ops calls to go-live weekends. I've learned to stay calm in those calls and never promise an answer I haven't checked.</p>
+        <p>Before IFS I spent three years at Vinota Networks in customer service, VoIP server administration and Angular development. I'm now finishing an MSc in Big Data Analytics at Robert Gordon University.</p>
+      </div>
+      <div>
+        <div class="switch" role="tablist" aria-label="Background">
+          <button role="tab" aria-selected="true" aria-controls="p-work" id="t-work">Experience</button>
+          <button role="tab" aria-selected="false" aria-controls="p-edu" id="t-edu">Education</button>
+        </div>
+        <div class="panel" id="p-work" role="tabpanel" aria-labelledby="t-work">
+          <ol class="timeline">
+            <li><span class="when">Jan 2023 to now</span><div><h3>Software Engineer <span class="org">at IFS</span></h3><p>IFS Cloud Service Management and MWO support. Investigation, debugging, corrective fixes, scripts and escalations.</p></div></li>
+            <li><span class="when">2022</span><div><h3>Associate Software Engineer <span class="org">at Vinota Networks</span></h3><p>Built an Angular app on Firebase Cloud Functions.</p></div></li>
+            <li><span class="when">2020 to 2022</span><div><h3>Server Administrator <span class="org">at Vinota Networks</span></h3><p>Cut VoIP call drop rates by 30% through route testing and troubleshooting.</p></div></li>
+            <li><span class="when">2019 to 2022</span><div><h3>Customer Service Specialist <span class="org">at Vinota Networks</span></h3><p>Looked at daily user behaviour and gave customers faster, better-fitted support.</p></div></li>
+          </ol>
+        </div>
+        <div class="panel" id="p-edu" role="tabpanel" aria-labelledby="t-edu" hidden>
+          <ol class="timeline">
+            <li><span class="when">2025 to now</span><div><h3>MSc Big Data Analytics <span class="org">at Robert Gordon University</span></h3><p>Part-time. PgDip stage completed with Distinction in September 2026, final project in progress. Modules include data warehousing, big data programming, data mining, text analytics and cloud computing.</p></div></li>
+            <li><span class="when">2018 to 2022</span><div><h3>BEng (Hons) Software Engineering <span class="org">at the University of Staffordshire</span></h3><p>Studied through APIIT Sri Lanka. Second Class Honours, Upper Division.</p></div></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-title">
+    <div class="wrap">
+      <h2 id="skills-title">Skills</h2>
+      <div class="skill-groups" style="margin-top: 1.5rem;">
+        <div class="skill-group"><h3>IFS</h3><ul class="tags"><li>IFS Cloud</li><li>IFS Applications 9 and 10</li><li>Mobile Work Order</li><li>Service Management</li><li>Touch Apps Server</li><li>Mobile Framework</li></ul></div>
+        <div class="skill-group"><h3>Support tools</h3><ul class="tags"><li>ServiceNow</li><li>Jira</li></ul></div>
+        <div class="skill-group"><h3>Technical</h3><ul class="tags"><li>PL/SQL</li><li>Oracle Database</li><li>C#</li><li>.NET</li><li>Java</li><li>JSON</li><li>XML</li><li>Android</li><li>Angular</li></ul></div>
+        <div class="skill-group"><h3>Data</h3><ul class="tags"><li>Data warehousing</li><li>Big data programming</li><li>Data mining</li><li>Text analytics</li><li>Cloud computing</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div>
+        <h2 id="contact-title">Stuck on an IFS issue?</h2>
+        <p>Whether you work with IFS or run a support team of your own, tell me what's going on. I'll reply within two working days.</p>
+        <div class="links">
+          <a class="btn btn-sm" href="https://www.linkedin.com/in/janith-dabare-515ba2190/" rel="noopener">LinkedIn</a>
+          <a class="btn btn-sm" href="https://github.com/JaniDAB" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <form id="contact-form" novalidate>
+        <div class="row">
+          <div><label for="f-name">Name</label><input id="f-name" type="text" autocomplete="name" required></div>
+          <div><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" required></div>
+        </div>
+        <div><label for="f-company">Company</label><input id="f-company" type="text" autocomplete="organization"></div>
+        <fieldset>
+          <legend>What it's about</legend>
+          <div class="chips">
+            <input type="radio" name="need" id="n1" value="MWO issue" checked><label for="n1">MWO issue</label>
+            <input type="radio" name="need" id="n2" value="Service Management"><label for="n2">Service Management</label>
+            <input type="radio" name="need" id="n3" value="Escalation or go-live"><label for="n3">Escalation or go-live</label>
+            <input type="radio" name="need" id="n4" value="Something else"><label for="n4">Something else</label>
+          </div>
+        </fieldset>
+        <div><label for="f-msg">Message</label><textarea id="f-msg" required></textarea></div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div><button class="btn btn-primary" type="submit">Send message</button></div>
+        <p class="form-note">This opens your email app with the message ready to send.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><span>© <span id="year">2026</span> Janith Dabare</span><span>Colombo, Sri Lanka</span></div>
+</footer>
+
+<script>
+(function () {
+  const EMAIL = "hello@janithdabare.com";
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Header border on scroll
+  const header = document.getElementById("header");
+  addEventListener("scroll", () => header.classList.toggle("scrolled", scrollY > 8), { passive: true });
+
+  // Case replay console
+  const cases = [
+    { prio: "P1", lines: [
+      ['<span class="dim">$</span> open case: mobile app initialization slow', 500],
+      ['<span class="dim">></span> init on customer device ....... <span class="num">15m 12s</span>', 700],
+      ['<span class="dim">></span> same user, IFS test device .... <span class="num">3m 04s</span>', 700],
+      ['<span class="dim">></span> so it is not the user or the data', 600],
+      ['<span class="dim">></span> checking network and app source', 900],
+      ['<span class="dim">></span> app installed from third-party source', 500],
+      ['<span class="dim">></span> older than the Microsoft Store build', 700],
+      ['<span class="dim">></span> root cause sent to customer with steps', 800],
+      ['', 250],
+      ['<span class="done">status: resolved</span>', 0] ]},
+    { prio: "Max", lines: [
+      ['<span class="dim">$</span> open case: users cannot initialize, go-live Monday', 500],
+      ['<span class="dim">></span> initialize with Group Push ...... <span class="num">failed</span>', 800],
+      ['<span class="dim">></span> gather details on call with customer', 700],
+      ['<span class="dim">></span> escalation call: try fixes ...... <span class="num">failed</span>', 900],
+      ['<span class="dim">></span> last resort: Group Push to Batch', 900],
+      ['<span class="dim">></span> initialize with Batch ........... <span class="num">ok</span>', 700],
+      ['', 250],
+      ['<span class="done">status: resolved, go-live on schedule</span>', 0] ]},
+    { prio: "P1", lines: [
+      ['<span class="dim">$</span> open case: P1 performance, MWO queries blamed', 500],
+      ['<span class="dim">></span> pull top CPU consumers', 800],
+      ['<span class="dim">></span> MWO queries ranked ............. <span class="num">#7, #8</span>', 800],
+      ['<span class="dim">></span> top consumers belong to other areas', 700],
+      ['<span class="dim">></span> share evidence, route to owning team', 800],
+      ['', 250],
+      ['<span class="done">status: handed over with evidence</span>', 0] ]}
+  ];
+  const log = document.getElementById("log");
+  const prio = document.getElementById("prio");
+  const tabs = document.querySelectorAll(".tab");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0, timer = null;
+
+  function draw(lines, n, caret) {
+    log.innerHTML = lines.slice(0, n).map(l => "<p>" + (l[0] || "&nbsp;") + "</p>").join("") +
+      (caret ? '<p><span class="caret"></span></p>' : "");
+  }
+  function play(i) {
+    clearTimeout(timer);
+    current = i;
+    const c = cases[i];
+    prio.textContent = c.prio;
+    tabs.forEach((t, k) => t.setAttribute("aria-selected", k === i ? "true" : "false"));
+    if (reduce) { draw(c.lines, c.lines.length, false); return; }
+    let n = 0;
+    draw(c.lines, 0, true);
+    (function step() {
+      if (n >= c.lines.length) { draw(c.lines, n, false); return; }
+      const d = c.lines[n][1];
+      n++;
+      draw(c.lines, n, n < c.lines.length);
+      timer = setTimeout(step, d);
+    })();
+  }
+  tabs.forEach((t, k) => t.addEventListener("click", () => play(k)));
+  document.getElementById("replay-btn").addEventListener("click", () => play(current));
+
+  // Start the replay when the console scrolls into view
+  const consoleEl = document.querySelector(".console");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { play(0); io.disconnect(); } }, { threshold: 0.35 });
+    io.observe(consoleEl);
+  } else { play(0); }
+
+  // Experience / education switch
+  const sw = document.querySelectorAll(".switch button");
+  sw.forEach(b => b.addEventListener("click", () => {
+    sw.forEach(x => {
+      const on = x === b;
+      x.setAttribute("aria-selected", on ? "true" : "false");
+      document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
+    });
+  }));
+
+  // Contact form: builds an email
+  const form = document.getElementById("contact-form");
+  const err = document.getElementById("form-error");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = form.querySelector("#f-name").value.trim();
+    const email = form.querySelector("#f-email").value.trim();
+    const company = form.querySelector("#f-company").value.trim();
+    const msg = form.querySelector("#f-msg").value.trim();
+    const need = form.querySelector("input[name=need]:checked").value;
+    if (!name || !email || !msg) { err.textContent = "Add your name, email and a message, then send again."; return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { err.textContent = "That email address doesn't look right. Check it and send again."; return; }
+    err.textContent = "";
+    const subject = "Website enquiry: " + need;
+    const body = "Name: " + name + "\nEmail: " + email + (company ? "\nCompany: " + company : "") + "\n\n" + msg;
+    location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  });
+})();
+</script>
+</body>
+</html>
