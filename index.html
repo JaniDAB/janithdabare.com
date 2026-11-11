@@ -241,16 +241,10 @@
   form { background: #fff; color: var(--ink); border-radius: 20px; padding: clamp(1.25rem, 3vw, 2rem); display: grid; gap: 1rem; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
-  label, legend { font-size: var(--step--1); font-weight: 700; display: block; margin-bottom: .35rem; }
+  label { font-size: var(--step--1); font-weight: 700; display: block; margin-bottom: .35rem; }
   input[type=text], input[type=email], textarea { width: 100%; font: 400 1rem/1.4 var(--font); color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .7rem .8rem; }
   input:focus, textarea:focus { outline: 2px solid var(--violet); outline-offset: 0; border-color: var(--violet); }
   textarea { min-height: 7rem; resize: vertical; }
-  fieldset { border: 0; margin: 0; padding: 0; }
-  .chips { display: flex; flex-wrap: wrap; gap: .45rem; }
-  .chips input { position: absolute; opacity: 0; pointer-events: none; }
-  .chips label { font-weight: 600; margin: 0; padding: .45rem .8rem; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; background: var(--paper); }
-  .chips input:checked + label { background: var(--violet); border-color: var(--violet); color: #fff; }
-  .chips input:focus-visible + label { outline: 3px solid var(--amber); outline-offset: 2px; }
   .contact .form-note { font-size: .8125rem; color: var(--ink-soft); margin: 0; }
   .contact .form-error { color: #B42318; font-size: var(--step--1); margin: 0; min-height: 1.2em; }
 
@@ -537,15 +531,6 @@
           <div><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" required></div>
         </div>
         <div><label for="f-company">Company</label><input id="f-company" type="text" autocomplete="organization"></div>
-        <fieldset>
-          <legend>What it's about</legend>
-          <div class="chips">
-            <input type="radio" name="need" id="n1" value="A technical problem" checked><label for="n1">A technical problem</label>
-            <input type="radio" name="need" id="n2" value="Escalation or go-live"><label for="n2">Escalation or go-live</label>
-            <input type="radio" name="need" id="n3" value="Working together"><label for="n3">Working together</label>
-            <input type="radio" name="need" id="n4" value="Something else"><label for="n4">Something else</label>
-          </div>
-        </fieldset>
         <div><label for="f-msg">Message</label><textarea id="f-msg" required></textarea></div>
         <p class="form-error" id="form-error" role="alert"></p>
         <div><button class="btn btn-primary" type="submit">Send message</button></div>
@@ -658,11 +643,10 @@
     const email = form.querySelector("#f-email").value.trim();
     const company = form.querySelector("#f-company").value.trim();
     const msg = form.querySelector("#f-msg").value.trim();
-    const need = form.querySelector("input[name=need]:checked").value;
     if (!name || !email || !msg) { err.textContent = "Add your name, email and a message, then send again."; return; }
     if (!/^\S+@\S+\.\S+$/.test(email)) { err.textContent = "That email address doesn't look right. Check it and send again."; return; }
     err.textContent = "";
-    const subject = "Website enquiry: " + need;
+    const subject = "Website enquiry";
     const body = "Name: " + name + "\nEmail: " + email + (company ? "\nCompany: " + company : "") + "\n\n" + msg;
     location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   });
