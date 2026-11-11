@@ -22,7 +22,7 @@ Copy should read like a person wrote it. Avoid em dashes, groups of three used f
 
 - Colours: paper #F4F2F8, paper-2 #EAE5F3, ink #1C1530, ink-soft #564E6B, violet #5B2BD6 (primary), violet-deep #3A1A8F, lilac #DDD3F6, amber #E3A008 (priority chips only), line #D6CFE5, console #1E1733.
 - Type: Schibsted Grotesk for everything; JetBrains Mono only inside the case replay console.
-- Interactive parts: the case replay console (tabs plus a Replay button), the case story folders (details/summary), the Experience and Education switch, and the contact form. The form builds a mailto link to hello@janithdabare.com; there is no backend.
+- Interactive parts: the case replay console (tabs plus a Replay button), the case story folders (details/summary), the Experience and Education switch, and the contact form. The form posts to Web3Forms (access key in the script), which emails Janith; there is no backend of our own.
 - The photo is images/janith.jpg, used unedited in the hero and for link previews. Janith wants it kept as it is.
 - Left-aligned layout. Don't add fade-in effects to sections; the console replay is the only automatic motion.
 - Keep it responsive, keyboard-focus visible, and respect prefers-reduced-motion.
